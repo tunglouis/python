@@ -1,2 +1,1 @@
-# python
-Learning Python
+#Hoc python basic
