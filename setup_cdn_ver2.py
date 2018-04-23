@@ -52,19 +52,21 @@ tmux send-keys -t sys "python /home/sysadmin/cam9.py" C-m
 
 class nginx():
     def main():
-        print('Beginning file download source.list')
-
-        url = 'https://firmware.vp9.vn/release/relay_server/source.list'  
-        wget.download(url, '/home/sysadmin/source.list')
-        copyfile('/home/sysadmin/source.list', '/etc/apt/source.list')
-        os.system('sudo apt update')
-        os.system('chmod +x nginx.sh')
-        call(['bash', 'nginx.sh'])
+        my_file = '/home/sysadmin/source.list'
+        if os.path.isfile(my_file) and os.access(my_file, os.R_OK):
+            print('File exists')
+        else:
+            print('Beginning file download source.list')
+            url = 'https://firmware.vp9.vn/release/relay_server/source.list'  
+            wget.download(url, '/home/sysadmin/source.list')
+            copyfile('/home/sysadmin/source.list', '/etc/apt/source.list')
 
     if __name__ == '__main__':
         main()
 
-
+os.system('sudo apt update')
+os.system('chmod +x nginx.sh')
+call(['bash', 'nginx.sh'])
 while ("1"=="1"):
     domain = raw_input("Enter a domain here: ")
     if ("." in str(domain)):
@@ -83,11 +85,16 @@ while ("1"=="1"):
 
 class ssl():
     def main():
-        print("Beginning file download letsencrypt")
-        os.system('wget https://firmware.vp9.vn/release/relay_server/certbot-auto -O /home/sysadmin/certbot-auto')
-        os.system('chmod a+x /home/sysadmin/certbot-auto')
-        os.system('chown -R sysadmin:sysadmin certbot-auto')
-        os.system('/home/sysadmin/certbot-auto certonly --standalone -d %s' % domain)
+        file_certbot = '/home/sysadmin/certbot-auto'
+        if os.path.isfile(file_certbot) and os.access(file_certbot, os.R_OK):
+            print('File exists')
+            os.system('/home/sysadmin/certbot-auto certonly --standalone -d %s' % domain)
+        else:
+            print("Beginning file download letsencrypt")
+            os.system('wget https://firmware.vp9.vn/release/relay_server/certbot-auto -O /home/sysadmin/certbot-auto')
+            os.system('chmod a+x /home/sysadmin/certbot-auto')
+            os.system('chown -R sysadmin:sysadmin certbot-auto')
+            os.system('/home/sysadmin/certbot-auto certonly --standalone -d %s' % domain)
 
 #        url = 'https://firmware.vp9.vn/release/relay_server/certbot-auto'
 #        wget.download(url, '/home/sysadmin/certbot-auto')
@@ -111,10 +118,13 @@ class config():
     createFolder('/home/sysadmin/nginx/conf/sites')
 
     def main():
-        print("Config nginx.conf")
-
-        url = 'https://firmware.vp9.vn/release/relay_server/nginx.conf'
-        wget.download(url, '/home/sysadmin/nginx/nginx.conf')
+        file_nginx_conf = '/home/sysadmin/nginx.conf'
+        if os.path.isfile(file_nginx_conf) and os.access(file_nginx_conf, os.R_OK):
+            print('File exists')
+        else:
+            url = 'https://firmware.vp9.vn/release/relay_server/nginx.conf'
+            wget.download(url, '/home/sysadmin/nginx.conf')
+            copyfile('/home/sysadmin/nginx.conf', '/home/sysadmin/nginx/nginx.conf')
 
         print("Config domain sites")
         url = 'https://firmware.vp9.vn/release/relay_server/domain.conf'
