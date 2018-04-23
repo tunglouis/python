@@ -27,12 +27,7 @@ tmux send-keys -t sys "python /home/sysadmin/cam9.py" C-m
             fd.seek(12)
             fd.writelines(contents)
 
-#        with open("/etc/ufw/user.rules", "r+") as file:
-#            line_fw = any("-A ufw-user-input -p tcp --dport 443 -j ACCEPT" in line for line in file)
-#            if not line_fw:
-#                file.seek(0, os.SEEK_END)
-#                file.write("-A ufw-user-input -p tcp --dport 443 -j ACCEPT\n")
-#                file.close
+
         with open("/etc/sudoers", "r+") as file:
             line_sudoers = any('''
 # See sudoers(5) for more information on "#include" directives:
@@ -76,9 +71,7 @@ while ("1"=="1"):
         if ("." in domain[len(domain)-1]):
             print "Dau cham o cuoi, nhap lai"
             continue
-#        if not ("conf" in domain):
-#            print "nhap sai dinh dang, thieu .conf o cuoi, nhap lai"
-#            continue
+
         break
     else:
         continue
@@ -95,11 +88,6 @@ class ssl():
             os.system('chmod a+x /home/sysadmin/certbot-auto')
             os.system('chown -R sysadmin:sysadmin certbot-auto')
             os.system('/home/sysadmin/certbot-auto certonly --standalone -d %s' % domain)
-
-#        url = 'https://firmware.vp9.vn/release/relay_server/certbot-auto'
-#        wget.download(url, '/home/sysadmin/certbot-auto')
-#        os.system('chown -R sysadmin:sysadmin certbot-auto')
-#        os.system('/home/sysadmin/certbot-auto certonly --standalone -d %s' % domain)
 
     if __name__ == '__main__':
         main()
@@ -152,18 +140,7 @@ class nodejs():
         os.system('sudo apt install daemontools daemontools-run')
         os.system('sudo systemctl enable daemontools.service')
         os.system('sudo systemctl start daemontools.service')
-#        os.system('sudo apt-get install python-software-properties')
-#        os.system('sudo add-apt-repository -y -r ppa:chris-lea/node.js')
-#        os.system('sudo curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -')
-#        os.system('VERSION=node_7.x')
-#        os.system('DISTRO="$(lsb_release -s -c)"')
-#        os.system('sudo echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list')
-#        os.system('sudo echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list')
-#        os.system('sudo apt-get update')
-#        os.system('sudo apt-get install nodejs')
-#        os.system('sudo npm install -g npm')
-#        os.system('sudo npm install -g n')
-#        os.system('sudo n stable')
+
 
     if __name__ == '__main__':
         main()
@@ -187,6 +164,19 @@ exec 2>&1
 exec setuidgid namnd node --stack-size=16000 /home/namnd/namcdn/obfuscate/app.js --config=local%d.json
                     ''' %(m))
         file.close
+
+        createFolder('/home/namnd/namcdn/config')
+        file = open('/home/namnd/namcdn/config/local%d.json' % m,"w+")
+        file.write('''
+{
+  "central_server":"%s:443",
+  "http_port":%d,
+  "priv_key": "-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQDmPd1GH/rh+jW1+jArPhbtBsCe6J1d70+yJyNVdw3OOE1JDtxm\nRWAXLn6+qW3DLDbDplGG5A/zSCMwV8Q4iIfRGs5RAxx2NRpnV3HDhOeO8+mHYRP1\nllKqVcoO+81KhgSmZmrcd4lXPAwU/GJwx/AspHkU6S34U9+nZgsXTunr3QIDAQAB\nAoGAbrpF1lm+8DrC5feifslngSqELGg2dlyG+Wi1J38QFqMhGAebm1u18LAdqFgX\nP4vd8o3kG3lG6ntA4Rj0dzPCDLa6vHMz6EgIP2l+MCgTW3Ur5a3cBLtjXkhkzYuv\nMfyWOGnQJ6kCgmqav//dDwwGIOv+Ti0JZtta1FCLTETPSoECQQD5e395G+LoF3+Y\nDVVTP0v8++jMHCTzE/1/iVS86YPWQg8e6UIDtoaSyL4UvfqZuODTaPGWR5w0Gq6G\n1ugiXEqRAkEA7EGv4W2hUgr7vzeESNvPTFDFJhWSCRT6SyQKNtveHPixoL/8uSux\nxV+E43mmRbI+l61FfeL/gcra/JwgnjA6jQJABnPSPTCicrxA2Y7muQt3DKj7QWQs\n9Hh84vKLVYN4nG8C8xq3UV9EJcG5YNH1DErCzdT2ApwBhzt1bhla0aCvcQJBAL1b\nPIuSobyvHu04oub+flytVAZdPYnX7XAyN5mWiaRw03WCyxzi333RPCJSCylLXo2V\nC+CFAsLVgsT6oc4H27UCQF+OIFOGpeOko5lTPkrAUXitP7y+kL0wnvTme66fL+Qo\nhmvsPI2TwVrYSAP8gON1hfUI69nCIUgbmWjnTgHz5+c=\n-----END RSA PRIVATE KEY-----"
+}
+            ''' % (domain,m))
+        file.close
+        os.system('chown -R namnd:namnd /home/namnd/namcdn/config/local%d.json' % m)
+
     print("Beginning file download namcdn")
 #        url = 'https://firmware.vp9.vn/release/relay_server/namcdn/namcdn-20180412.tar.gz'
 #        wget.download(url, '/home/namnd/namcdn/namcdn-20180412.tar.gz')
@@ -203,23 +193,8 @@ exec setuidgid sysadmin node /home/sysadmin/cms3.0_CentralServer/nodejs/central_
     os.system('sudo svc -d /etc/service/*')
     os.system('sudo svc -u /etc/service/*')
     os.system('sudo svc -t /etc/service/*')
-#        os.system('sudo svstat /etc/service/*')
-#        os.system('su - namnd')
-#        os.system('cd /home/namnd/namcdn/config')
-    createFolder('/home/namnd/namcdn/config')
-    file = open('/home/namnd/namcdn/config/local%d.json' % m,"w+")
-    file.write('''
-{
-  "central_server":"%s:443",
-  "http_port":%d,
-  "priv_key": "-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQDmPd1GH/rh+jW1+jArPhbtBsCe6J1d70+yJyNVdw3OOE1JDtxm\nRWAXLn6+qW3DLDbDplGG5A/zSCMwV8Q4iIfRGs5RAxx2NRpnV3HDhOeO8+mHYRP1\nllKqVcoO+81KhgSmZmrcd4lXPAwU/GJwx/AspHkU6S34U9+nZgsXTunr3QIDAQAB\nAoGAbrpF1lm+8DrC5feifslngSqELGg2dlyG+Wi1J38QFqMhGAebm1u18LAdqFgX\nP4vd8o3kG3lG6ntA4Rj0dzPCDLa6vHMz6EgIP2l+MCgTW3Ur5a3cBLtjXkhkzYuv\nMfyWOGnQJ6kCgmqav//dDwwGIOv+Ti0JZtta1FCLTETPSoECQQD5e395G+LoF3+Y\nDVVTP0v8++jMHCTzE/1/iVS86YPWQg8e6UIDtoaSyL4UvfqZuODTaPGWR5w0Gq6G\n1ugiXEqRAkEA7EGv4W2hUgr7vzeESNvPTFDFJhWSCRT6SyQKNtveHPixoL/8uSux\nxV+E43mmRbI+l61FfeL/gcra/JwgnjA6jQJABnPSPTCicrxA2Y7muQt3DKj7QWQs\n9Hh84vKLVYN4nG8C8xq3UV9EJcG5YNH1DErCzdT2ApwBhzt1bhla0aCvcQJBAL1b\nPIuSobyvHu04oub+flytVAZdPYnX7XAyN5mWiaRw03WCyxzi333RPCJSCylLXo2V\nC+CFAsLVgsT6oc4H27UCQF+OIFOGpeOko5lTPkrAUXitP7y+kL0wnvTme66fL+Qo\nhmvsPI2TwVrYSAP8gON1hfUI69nCIUgbmWjnTgHz5+c=\n-----END RSA PRIVATE KEY-----"
-}
-            ''' % (domain,m))
-    file.close
-    os.system('chown -R namnd:namnd /home/namnd/namcdn/config/local%d.json' % m)
+        
     os.system('sudo svc -u /etc/service/namcdn80*')
-
-#        os.system('wget https://firmware.vp9.vn/release/relay_server/central.tar.gz -O /home/sysadmin/central.tar.gz')
     url = 'https://firmware.vp9.vn/release/relay_server/central.tar.gz'
     wget.download(url, '/home/sysadmin/central.tar.gz')
     os.system('tar -xzvf /home/sysadmin/central.tar.gz -C /home/sysadmin/')
